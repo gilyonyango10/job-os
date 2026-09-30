@@ -13,41 +13,29 @@ type JobFormProps = {
   onCreated: (job: Job) => void;
 };
 
-const EMPTY_FORM = {
-  title: "",
-  company: "",
-  location: "",
-  description: "",
-  source: "manual",
-  source_url: "",
-};
-
 export function JobForm({ onCreated }: JobFormProps) {
-  const [form, setForm] = useState(EMPTY_FORM);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  function updateField(field: keyof typeof EMPTY_FORM, value: string) {
-    setForm((current) => ({ ...current, [field]: value }));
-  }
-
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const form = event.currentTarget;
+    const data = new FormData(form);
     setIsSubmitting(true);
     setError(null);
 
     const payload: JobCreate = {
-      title: form.title.trim(),
-      company: form.company.trim(),
-      description: form.description.trim(),
-      source: form.source.trim() || "manual",
-      location: form.location.trim() || null,
-      source_url: form.source_url.trim() || null,
+      title: String(data.get("title") ?? "").trim(),
+      company: String(data.get("company") ?? "").trim(),
+      description: String(data.get("description") ?? "").trim(),
+      source: String(data.get("source") ?? "").trim() || "manual",
+      location: String(data.get("location") ?? "").trim() || null,
+      source_url: String(data.get("source_url") ?? "").trim() || null,
     };
 
     try {
       const job = await jobsApi.create(payload);
-      setForm(EMPTY_FORM);
+      form.reset();
       onCreated(job);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Could not save this job.");
@@ -60,52 +48,47 @@ export function JobForm({ onCreated }: JobFormProps) {
     <form onSubmit={handleSubmit} className="grid gap-4">
       <Field
         id="title"
+        name="title"
         label="Title"
-        value={form.title}
-        onChange={(value) => updateField("title", value)}
         required
         placeholder="Backend Engineer"
       />
       <Field
         id="company"
+        name="company"
         label="Company"
-        value={form.company}
-        onChange={(value) => updateField("company", value)}
         required
         placeholder="Northwind Labs"
       />
       <Field
         id="location"
+        name="location"
         label="Location"
-        value={form.location}
-        onChange={(value) => updateField("location", value)}
         placeholder="Remote"
       />
       <div className="grid gap-2">
         <Label htmlFor="description">Description</Label>
         <Textarea
           id="description"
+          name="description"
           required
           rows={6}
-          value={form.description}
-          onChange={(event) => updateField("description", event.target.value)}
           placeholder="Paste the job description or a short summary."
         />
       </div>
       <Field
         id="source"
+        name="source"
         label="Source"
-        value={form.source}
-        onChange={(value) => updateField("source", value)}
         required
+        defaultValue="manual"
         placeholder="manual"
       />
       <Field
         id="source_url"
+        name="source_url"
         label="Source URL"
         type="url"
-        value={form.source_url}
-        onChange={(value) => updateField("source_url", value)}
         placeholder="https://example.com/jobs/backend-engineer"
       />
       {error ? (
@@ -122,31 +105,31 @@ export function JobForm({ onCreated }: JobFormProps) {
 
 function Field({
   id,
+  name,
   label,
-  value,
-  onChange,
   placeholder,
   required,
   type = "text",
+  defaultValue,
 }: {
   id: string;
+  name: string;
   label: string;
-  value: string;
-  onChange: (value: string) => void;
   placeholder?: string;
   required?: boolean;
   type?: string;
+  defaultValue?: string;
 }) {
   return (
     <div className="grid gap-2">
       <Label htmlFor={id}>{label}</Label>
       <Input
         id={id}
+        name={name}
         type={type}
         required={required}
-        value={value}
+        defaultValue={defaultValue}
         placeholder={placeholder}
-        onChange={(event) => onChange(event.target.value)}
       />
     </div>
   );
