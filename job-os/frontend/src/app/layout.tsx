@@ -31,7 +31,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <Link href="/" className="text-sm font-semibold tracking-tight">
               Job OS
             </Link>
-            <p className="text-sm text-muted-foreground">Jobs</p>
+            <nav className="flex items-center gap-4 text-sm">
+              <Link href="/" className="text-muted-foreground hover:text-foreground">
+                Jobs
+              </Link>
+              <Link
+                href="/profile"
+                className="text-muted-foreground hover:text-foreground"
+              >
+                Profile
+              </Link>
+            </nav>
           </div>
         </header>
         <main className="flex-1">{children}</main>

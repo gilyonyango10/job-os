@@ -1,6 +1,6 @@
 # Job OS frontend
 
-Minimal Jobs page for capturing and reviewing opportunities. It talks to the FastAPI backend through a small typed API client.
+Minimal Jobs and Candidate Profile pages. They talk to the FastAPI backend through a small typed API client.
 
 ## Run locally
 
@@ -21,6 +21,6 @@ npm install
 npm run dev
 ```
 
-Open http://127.0.0.1:43180
+Open http://127.0.0.1:43180 for jobs and http://127.0.0.1:43180/profile for the candidate profile.
 
 `NEXT_PUBLIC_API_URL` selects the backend. The local default is `http://127.0.0.1:48217`.

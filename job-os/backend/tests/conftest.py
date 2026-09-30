@@ -9,7 +9,7 @@ from sqlalchemy.pool import StaticPool
 from app.db.base import Base
 from app.db.session import get_db
 from app.main import create_app
-from app.models.job import Job  # noqa: F401
+from app import models as _models  # noqa: F401
 
 test_engine = create_engine(
     "sqlite://",

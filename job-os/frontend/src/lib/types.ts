@@ -28,3 +28,100 @@ export type JobCreate = {
   source?: string;
   source_url?: string | null;
 };
+
+export type Candidate = {
+  id: string;
+  full_name: string;
+  email: string | null;
+  location: string | null;
+  professional_summary: string | null;
+  education: Education[];
+  experience: Experience[];
+  skills: Skill[];
+  projects: Project[];
+  certifications: Certification[];
+};
+
+export type CandidateUpdate = {
+  full_name: string;
+  email?: string | null;
+  location?: string | null;
+  professional_summary?: string | null;
+};
+
+export type Education = {
+  id: string;
+  candidate_id: string;
+  institution: string;
+  degree: string | null;
+  field_of_study: string | null;
+  start_date: string | null;
+  end_date: string | null;
+};
+
+export type EducationWrite = {
+  institution: string;
+  degree?: string | null;
+  field_of_study?: string | null;
+  start_date?: string | null;
+  end_date?: string | null;
+};
+
+export type Experience = {
+  id: string;
+  candidate_id: string;
+  company: string;
+  title: string;
+  start_date: string | null;
+  end_date: string | null;
+  description: string | null;
+};
+
+export type ExperienceWrite = {
+  company: string;
+  title: string;
+  start_date?: string | null;
+  end_date?: string | null;
+  description?: string | null;
+};
+
+export type Skill = {
+  id: string;
+  candidate_id: string;
+  name: string;
+  category: string | null;
+};
+
+export type SkillWrite = {
+  name: string;
+  category?: string | null;
+};
+
+export type Project = {
+  id: string;
+  candidate_id: string;
+  name: string;
+  description: string | null;
+  technologies: string | null;
+};
+
+export type ProjectWrite = {
+  name: string;
+  description?: string | null;
+  technologies?: string | null;
+};
+
+export type Certification = {
+  id: string;
+  candidate_id: string;
+  name: string;
+  issuer: string | null;
+  date: string | null;
+};
+
+export type CertificationWrite = {
+  name: string;
+  issuer?: string | null;
+  date?: string | null;
+};
+

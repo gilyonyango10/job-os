@@ -1,6 +1,6 @@
 # Job OS
 
-Personal job-hunting operating system. The first slice captures jobs in a FastAPI backend and a React Jobs page.
+Personal job-hunting operating system. The current slice captures jobs and a structured candidate profile.
 
 ```
 job-os/
@@ -30,6 +30,7 @@ npm run dev
 ```
 
 - Jobs page: http://127.0.0.1:43180
+- Profile: http://127.0.0.1:43180/profile
 - API docs: http://127.0.0.1:48217/docs
 
 `NEXT_PUBLIC_API_URL` points the frontend at the backend. `CORS_ORIGINS` on the API must include the frontend origin.

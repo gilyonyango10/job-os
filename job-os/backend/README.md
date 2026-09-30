@@ -22,6 +22,13 @@ Copy `.env.example` to `.env` if you want to override the database URL or CORS o
 | POST | `/jobs` | Create a job |
 | GET | `/jobs` | List jobs |
 | GET | `/jobs/{job_id}` | Fetch one job |
+| GET | `/profile` | Get or create the candidate profile |
+| PUT | `/profile` | Update name, email, location, and summary |
+| POST/PUT/DELETE | `/profile/education` | Education records |
+| POST/PUT/DELETE | `/profile/experience` | Experience records |
+| POST/PUT/DELETE | `/profile/skills` | Skills |
+| POST/PUT/DELETE | `/profile/projects` | Projects |
+| POST/PUT/DELETE | `/profile/certifications` | Certifications |
 
 New jobs default to `status=DISCOVERED` and `source=manual`.
 

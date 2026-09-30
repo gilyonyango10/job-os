@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.jobs import router as jobs_router
+from app.api.profile import router as profile_router
 from app.config import settings
 from app.db.session import init_db
 from app.schemas.health import HealthResponse
@@ -31,6 +32,7 @@ def create_app(*, initialize_db: bool = True) -> FastAPI:
         allow_headers=["*"],
     )
     application.include_router(jobs_router)
+    application.include_router(profile_router)
 
     @application.get("/health", response_model=HealthResponse)
     def health() -> HealthResponse:
