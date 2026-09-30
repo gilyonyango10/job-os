@@ -1,7 +1,4 @@
-"use client";
-
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
@@ -12,54 +9,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ApiError, jobsApi } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import type { Job } from "@/lib/types";
 
 type JobDetailPageProps = {
-  jobId: string;
+  job?: Job;
+  error?: string | null;
 };
 
-export function JobDetailPage({ jobId }: JobDetailPageProps) {
-  const [job, setJob] = useState<Job | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function loadJob() {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const result = await jobsApi.get(jobId);
-        if (!cancelled) {
-          setJob(result);
-        }
-      } catch (cause) {
-        if (!cancelled) {
-          setJob(null);
-          if (cause instanceof ApiError && cause.status === 404) {
-            setError("This job was not found.");
-          } else {
-            setError(
-              cause instanceof Error ? cause.message : "Could not load this job.",
-            );
-          }
-        }
-      } finally {
-        if (!cancelled) {
-          setIsLoading(false);
-        }
-      }
-    }
-
-    void loadJob();
-    return () => {
-      cancelled = true;
-    };
-  }, [jobId]);
-
+export function JobDetailPage({ job, error }: JobDetailPageProps) {
   return (
     <div className="mx-auto grid w-full max-w-3xl gap-4 px-4 py-8 md:py-12">
       <Link
@@ -68,9 +26,7 @@ export function JobDetailPage({ jobId }: JobDetailPageProps) {
       >
         Back to jobs
       </Link>
-      {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading job…</p>
-      ) : error ? (
+      {error ? (
         <p className="text-sm text-destructive" role="alert">
           {error}
         </p>

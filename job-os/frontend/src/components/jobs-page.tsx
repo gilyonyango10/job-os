@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 
 import { JobForm } from "@/components/job-form";
 import { JobList } from "@/components/job-list";
@@ -14,31 +14,22 @@ import {
 import { jobsApi } from "@/lib/api";
 import type { Job } from "@/lib/types";
 
-export function JobsPage() {
-  const [jobs, setJobs] = useState<Job[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+type JobsPageProps = {
+  initialJobs: Job[];
+  initialError: string | null;
+};
 
-  const loadJobs = useCallback(async (options?: { silent?: boolean }) => {
-    if (!options?.silent) {
-      setIsLoading(true);
-    }
-    setError(null);
+export function JobsPage({ initialJobs, initialError }: JobsPageProps) {
+  const [jobs, setJobs] = useState<Job[]>(initialJobs);
+  const [error, setError] = useState<string | null>(initialError);
+
+  async function refreshJobs() {
     try {
       setJobs(await jobsApi.list());
+      setError(null);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Could not load jobs.");
-    } finally {
-      setIsLoading(false);
     }
-  }, []);
-
-  useEffect(() => {
-    void loadJobs();
-  }, [loadJobs]);
-
-  function handleCreated() {
-    void loadJobs({ silent: true });
   }
 
   return (
@@ -52,7 +43,15 @@ export function JobsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <JobForm onCreated={handleCreated} />
+          <JobForm
+            onCreated={(job) => {
+              setJobs((current) => [
+                job,
+                ...current.filter((item) => item.id !== job.id),
+              ]);
+              void refreshJobs();
+            }}
+          />
         </CardContent>
       </Card>
       <Card>
@@ -65,7 +64,7 @@ export function JobsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <JobList jobs={jobs} isLoading={isLoading} error={error} />
+          <JobList jobs={jobs} isLoading={false} error={error} />
         </CardContent>
       </Card>
     </div>
