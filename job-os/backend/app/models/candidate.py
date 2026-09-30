@@ -1,5 +1,6 @@
 import uuid
-from datetime import date
+from datetime import date as DateValue
+from typing import Optional
 
 from sqlalchemy import Date, ForeignKey, String, Text, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -62,8 +63,8 @@ class Education(Base):
     institution: Mapped[str] = mapped_column(String(255), nullable=False)
     degree: Mapped[str | None] = mapped_column(String(255), nullable=True)
     field_of_study: Mapped[str | None] = mapped_column(String(255), nullable=True)
-    start_date: Mapped[date | None] = mapped_column(Date, nullable=True)
-    end_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    start_date: Mapped[DateValue | None] = mapped_column(Date, nullable=True)
+    end_date: Mapped[DateValue | None] = mapped_column(Date, nullable=True)
 
     candidate: Mapped[Candidate] = relationship(back_populates="education")
 
@@ -82,8 +83,8 @@ class Experience(Base):
     )
     company: Mapped[str] = mapped_column(String(255), nullable=False)
     title: Mapped[str] = mapped_column(String(255), nullable=False)
-    start_date: Mapped[date | None] = mapped_column(Date, nullable=True)
-    end_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    start_date: Mapped[DateValue | None] = mapped_column(Date, nullable=True)
+    end_date: Mapped[DateValue | None] = mapped_column(Date, nullable=True)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     candidate: Mapped[Candidate] = relationship(back_populates="experience")
@@ -140,6 +141,6 @@ class Certification(Base):
     )
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     issuer: Mapped[str | None] = mapped_column(String(255), nullable=True)
-    date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    date: Mapped[Optional[DateValue]] = mapped_column(Date, nullable=True)
 
     candidate: Mapped[Candidate] = relationship(back_populates="certifications")
