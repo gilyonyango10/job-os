@@ -12,7 +12,7 @@ uv run uvicorn app.main:app --reload --host 127.0.0.1 --port 48217
 
 Open [http://127.0.0.1:48217/docs](http://127.0.0.1:48217/docs) for the interactive API.
 
-Copy `.env.example` to `.env` if you want to override the database URL. Without an env file, the app stores data in `job_os.db` in this directory.
+Copy `.env.example` to `.env` if you want to override the database URL or CORS origins. Without an env file, the app stores data in `job_os.db` in this directory and allows the local Jobs page at `http://127.0.0.1:43180`.
 
 ## Endpoints
 

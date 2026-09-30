@@ -4,14 +4,24 @@ Personal job-hunting operating system.
 
 ```
 backend/     FastAPI API
-frontend/    Web application
+frontend/    Next.js Jobs page
 extension/   Browser extension
 docs/        Product and engineering docs
 ```
 
-Run the API from `backend/`:
+## Run locally
 
 ```bash
+# API
+cd backend
 uv sync --group dev
 uv run uvicorn app.main:app --reload --host 127.0.0.1 --port 48217
+
+# Web app
+cd frontend
+cp .env.example .env.local
+npm install
+npm run dev
 ```
+
+Jobs page: http://127.0.0.1:43180
