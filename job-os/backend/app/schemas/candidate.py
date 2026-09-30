@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date as Date
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -15,15 +15,15 @@ class EducationWrite(BaseModel):
     institution: str = Field(min_length=1, max_length=255)
     degree: str | None = Field(default=None, max_length=255)
     field_of_study: str | None = Field(default=None, max_length=255)
-    start_date: date | None = None
-    end_date: date | None = None
+    start_date: Date | None = None
+    end_date: Date | None = None
 
 
 class ExperienceWrite(BaseModel):
     company: str = Field(min_length=1, max_length=255)
     title: str = Field(min_length=1, max_length=255)
-    start_date: date | None = None
-    end_date: date | None = None
+    start_date: Date | None = None
+    end_date: Date | None = None
     description: str | None = None
 
 
@@ -41,7 +41,7 @@ class ProjectWrite(BaseModel):
 class CertificationWrite(BaseModel):
     name: str = Field(min_length=1, max_length=255)
     issuer: str | None = Field(default=None, max_length=255)
-    date: date | None = None
+    date: Date | None = None
 
 
 class EducationRead(EducationWrite):
