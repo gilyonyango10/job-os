@@ -9,8 +9,11 @@ import type {
   Experience,
   ExperienceWrite,
   Job,
+  JobAnalysis,
   JobCreate,
   Project,
+  Requirement,
+  RequirementWrite,
   ProjectWrite,
   Skill,
   SkillWrite,
@@ -83,6 +86,23 @@ export const jobsApi = {
       method: "POST",
       body: JSON.stringify(payload),
     });
+  },
+  listRequirements(jobId: string): Promise<Requirement[]> {
+    return request<Requirement[]>(`/jobs/${jobId}/requirements`);
+  },
+  addRequirement(jobId: string, payload: RequirementWrite): Promise<Requirement> {
+    return request<Requirement>(`/jobs/${jobId}/requirements`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+  deleteRequirement(jobId: string, requirementId: string): Promise<void> {
+    return request<void>(`/jobs/${jobId}/requirements/${requirementId}`, {
+      method: "DELETE",
+    });
+  },
+  analyze(jobId: string): Promise<JobAnalysis> {
+    return request<JobAnalysis>(`/jobs/${jobId}/analysis`);
   },
 };
 

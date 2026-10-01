@@ -3,7 +3,7 @@ import uuid
 from datetime import datetime, timezone
 
 from sqlalchemy import DateTime, Enum, String, Text, Uuid
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 
@@ -42,4 +42,9 @@ class Job(Base):
         DateTime(timezone=True),
         nullable=False,
         default=lambda: datetime.now(timezone.utc),
+    )
+    requirements: Mapped[list["JobRequirement"]] = relationship(
+        back_populates="job",
+        cascade="all, delete-orphan",
+        order_by="JobRequirement.name.asc()",
     )

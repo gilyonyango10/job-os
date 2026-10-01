@@ -9,15 +9,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { JobIntelligence } from "@/components/job-intelligence";
 import { cn } from "@/lib/utils";
-import type { Job } from "@/lib/types";
+import type { Job, Requirement } from "@/lib/types";
 
 type JobDetailPageProps = {
   job?: Job;
+  requirements?: Requirement[];
   error?: string | null;
 };
 
-export function JobDetailPage({ job, error }: JobDetailPageProps) {
+export function JobDetailPage({
+  job,
+  requirements = [],
+  error,
+}: JobDetailPageProps) {
   return (
     <div className="mx-auto grid w-full max-w-3xl gap-4 px-4 py-8 md:py-12">
       <Link
@@ -31,6 +37,7 @@ export function JobDetailPage({ job, error }: JobDetailPageProps) {
           {error}
         </p>
       ) : job ? (
+        <>
         <Card>
           <CardHeader>
             <div className="flex flex-wrap items-start justify-between gap-3">
@@ -63,6 +70,8 @@ export function JobDetailPage({ job, error }: JobDetailPageProps) {
             </div>
           </CardContent>
         </Card>
+        <JobIntelligence jobId={job.id} initialRequirements={requirements} />
+        </>
       ) : null}
     </div>
   );

@@ -22,6 +22,11 @@ Copy `.env.example` to `.env` if you want to override the database URL or CORS o
 | POST | `/jobs` | Create a job |
 | GET | `/jobs` | List jobs |
 | GET | `/jobs/{job_id}` | Fetch one job |
+| POST | `/jobs/{job_id}/requirements` | Add a job requirement |
+| GET | `/jobs/{job_id}/requirements` | List job requirements |
+| PUT | `/jobs/{job_id}/requirements/{id}` | Update a requirement |
+| DELETE | `/jobs/{job_id}/requirements/{id}` | Delete a requirement |
+| GET | `/jobs/{job_id}/analysis` | Compare requirements with the profile |
 | GET | `/profile` | Get or create the candidate profile |
 | PUT | `/profile` | Update name, email, location, and summary |
 | POST/PUT/DELETE | `/profile/education` | Education records |

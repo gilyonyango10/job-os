@@ -7,6 +7,11 @@ from app.models.candidate import (
     Skill,
 )
 from app.models.job import Job, JobStatus
+from app.models.requirement import (
+    JobRequirement,
+    RequirementCategory,
+    RequirementImportance,
+)
 
 __all__ = [
     "Candidate",
@@ -14,7 +19,10 @@ __all__ = [
     "Education",
     "Experience",
     "Job",
+    "JobRequirement",
     "JobStatus",
     "Project",
+    "RequirementCategory",
+    "RequirementImportance",
     "Skill",
 ]

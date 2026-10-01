@@ -29,6 +29,55 @@ export type JobCreate = {
   source_url?: string | null;
 };
 
+export type RequirementCategory =
+  | "skill"
+  | "technology"
+  | "experience"
+  | "education"
+  | "responsibility"
+  | "certification"
+  | "other";
+
+export type RequirementImportance = "required" | "preferred";
+
+export type Requirement = {
+  id: string;
+  job_id: string;
+  name: string;
+  category: RequirementCategory;
+  importance: RequirementImportance;
+  description: string | null;
+};
+
+export type RequirementWrite = {
+  name: string;
+  category?: RequirementCategory;
+  importance?: RequirementImportance;
+  description?: string | null;
+};
+
+export type MatchClassification = "STRONG_EVIDENCE" | "TRANSFERABLE" | "GAP";
+
+export type RequirementMatch = {
+  job_id: string;
+  requirement_id: string;
+  requirement_name: string;
+  category: RequirementCategory;
+  importance: RequirementImportance;
+  classification: MatchClassification;
+  evidence: string[];
+};
+
+export type JobAnalysis = {
+  job: Job;
+  requirements: Requirement[];
+  strong_evidence: RequirementMatch[];
+  transferable: RequirementMatch[];
+  gaps: RequirementMatch[];
+  required_gaps: RequirementMatch[];
+  preferred_gaps: RequirementMatch[];
+};
+
 export type Candidate = {
   id: string;
   full_name: string;
