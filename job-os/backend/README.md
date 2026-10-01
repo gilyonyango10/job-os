@@ -12,7 +12,9 @@ uv run uvicorn app.main:app --reload --host 127.0.0.1 --port 48217
 
 Open [http://127.0.0.1:48217/docs](http://127.0.0.1:48217/docs) for the interactive API.
 
-Copy `.env.example` to `.env` if you want to override the database URL or CORS origins. Without an env file, the app stores data in `job_os.db` in this directory and allows the local Jobs page at `http://127.0.0.1:43180`.
+Copy `.env.example` to `.env` if you want to override the database URL, CORS origins, or AI settings. Without an env file, the app stores data in `job_os.db` in this directory, allows the local Jobs page at `http://127.0.0.1:43180`, and leaves requirement extraction unconfigured.
+
+Re-running extraction skips requirements with the same name and never deletes existing (including manual) rows. Review extracted requirements in the UI, then click Analyze Job separately.
 
 ## Endpoints
 
@@ -26,6 +28,7 @@ Copy `.env.example` to `.env` if you want to override the database URL or CORS o
 | GET | `/jobs/{job_id}/requirements` | List job requirements |
 | PUT | `/jobs/{job_id}/requirements/{id}` | Update a requirement |
 | DELETE | `/jobs/{job_id}/requirements/{id}` | Delete a requirement |
+| POST | `/jobs/{job_id}/extract-requirements` | Extract requirements from the job description |
 | GET | `/jobs/{job_id}/analysis` | Compare requirements with the profile |
 | GET | `/profile` | Get or create the candidate profile |
 | PUT | `/profile` | Update name, email, location, and summary |

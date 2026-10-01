@@ -52,5 +52,6 @@ class JobRequirement(Base):
         default=RequirementImportance.REQUIRED,
     )
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    evidence_text: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     job: Mapped[Job] = relationship(back_populates="requirements")

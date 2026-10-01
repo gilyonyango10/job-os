@@ -47,6 +47,7 @@ export type Requirement = {
   category: RequirementCategory;
   importance: RequirementImportance;
   description: string | null;
+  evidence_text: string | null;
 };
 
 export type RequirementWrite = {
@@ -54,6 +55,13 @@ export type RequirementWrite = {
   category?: RequirementCategory;
   importance?: RequirementImportance;
   description?: string | null;
+  evidence_text?: string | null;
+};
+
+export type ExtractRequirementsResponse = {
+  requirements: Requirement[];
+  created_count: number;
+  skipped_duplicate_count: number;
 };
 
 export type MatchClassification = "STRONG_EVIDENCE" | "TRANSFERABLE" | "GAP";

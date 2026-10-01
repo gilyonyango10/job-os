@@ -25,3 +25,5 @@ npm run dev
 ```
 
 Jobs page: http://127.0.0.1:43180
+
+Requirement extraction uses `AI_PROVIDER` and `AI_API_KEY` in `backend/.env`. Leave the provider as `none` until you want that endpoint enabled. Matching stays deterministic either way.

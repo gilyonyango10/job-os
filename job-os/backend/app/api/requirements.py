@@ -5,8 +5,13 @@ from sqlalchemy.orm import Session
 
 from app.db.session import get_db
 from app.schemas.analysis import JobAnalysis
-from app.schemas.requirement import RequirementRead, RequirementWrite
+from app.schemas.requirement import (
+    ExtractRequirementsResponse,
+    RequirementRead,
+    RequirementWrite,
+)
 from app.services import analysis as analysis_service
+from app.services import extract_job as extract_job_service
 from app.services import requirements as requirements_service
 
 router = APIRouter(tags=["requirements"])
@@ -64,6 +69,19 @@ def delete_requirement(
             status_code=status.HTTP_404_NOT_FOUND, detail="Requirement not found"
         )
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.post(
+    "/jobs/{job_id}/extract-requirements",
+    response_model=ExtractRequirementsResponse,
+)
+def extract_requirements(
+    job_id: UUID, db: Session = Depends(get_db)
+) -> ExtractRequirementsResponse:
+    result = extract_job_service.extract_requirements_for_job(db, job_id)
+    if result is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
+    return result
 
 
 @router.get("/jobs/{job_id}/analysis", response_model=JobAnalysis)

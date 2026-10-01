@@ -43,6 +43,8 @@ AI functionality should eventually be separated into focused services:
 
 Do not implement these all at once.
 
+This iteration implements `RequirementExtractor` only. It writes structured `JobRequirement` rows from a job description. Candidate matching stays in the deterministic engine and is never decided by the model.
+
 ## MVP Rule
 
 Every feature must answer:

@@ -1,6 +1,6 @@
 from collections.abc import Generator
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.config import settings
@@ -34,3 +34,18 @@ def init_db() -> None:
     from app import models as _models  # noqa: F401
 
     Base.metadata.create_all(bind=engine)
+    _ensure_sqlite_columns()
+
+
+def _ensure_sqlite_columns() -> None:
+    """Add columns create_all cannot attach to an existing SQLite file."""
+    if not settings.database_url.startswith("sqlite"):
+        return
+    inspector = inspect(engine)
+    if "job_requirements" not in inspector.get_table_names():
+        return
+    columns = {column["name"] for column in inspector.get_columns("job_requirements")}
+    if "evidence_text" in columns:
+        return
+    with engine.begin() as connection:
+        connection.execute(text("ALTER TABLE job_requirements ADD COLUMN evidence_text TEXT"))

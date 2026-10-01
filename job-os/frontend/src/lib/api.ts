@@ -8,6 +8,7 @@ import type {
   EducationWrite,
   Experience,
   ExperienceWrite,
+  ExtractRequirementsResponse,
   Job,
   JobAnalysis,
   JobCreate,
@@ -103,6 +104,12 @@ export const jobsApi = {
   },
   analyze(jobId: string): Promise<JobAnalysis> {
     return request<JobAnalysis>(`/jobs/${jobId}/analysis`);
+  },
+  extractRequirements(jobId: string): Promise<ExtractRequirementsResponse> {
+    return request<ExtractRequirementsResponse>(
+      `/jobs/${jobId}/extract-requirements`,
+      { method: "POST" },
+    );
   },
 };
 

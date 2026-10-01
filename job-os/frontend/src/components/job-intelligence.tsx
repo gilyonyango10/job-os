@@ -34,10 +34,42 @@ export function JobIntelligence({
   const [requirements, setRequirements] = useState(initialRequirements);
   const [analysis, setAnalysis] = useState<JobAnalysis | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [extractNote, setExtractNote] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [extracting, setExtracting] = useState(false);
+  const [analyzing, setAnalyzing] = useState(false);
+  const locked = busy || extracting || analyzing;
 
   async function refreshRequirements() {
     setRequirements(await jobsApi.listRequirements(jobId));
+  }
+
+  async function handleExtract() {
+    setExtracting(true);
+    setError(null);
+    setExtractNote(null);
+    try {
+      const result = await jobsApi.extractRequirements(jobId);
+      setRequirements(result.requirements);
+      setAnalysis(null);
+      setExtractNote(
+        result.created_count === 0 && result.skipped_duplicate_count > 0
+          ? `No new requirements. ${result.skipped_duplicate_count} already existed and were left unchanged.`
+          : `Added ${result.created_count} requirement${result.created_count === 1 ? "" : "s"} from the job description${
+              result.skipped_duplicate_count
+                ? ` (${result.skipped_duplicate_count} duplicate${result.skipped_duplicate_count === 1 ? "" : "s"} skipped)`
+                : ""
+            }. Review them before analyzing.`,
+      );
+    } catch (cause) {
+      setError(
+        cause instanceof Error
+          ? cause.message
+          : "Could not extract requirements from this job description.",
+      );
+    } finally {
+      setExtracting(false);
+    }
   }
 
   async function handleAddRequirement(event: FormEvent<HTMLFormElement>) {
@@ -82,14 +114,14 @@ export function JobIntelligence({
   }
 
   async function handleAnalyze() {
-    setBusy(true);
+    setAnalyzing(true);
     setError(null);
     try {
       setAnalysis(await jobsApi.analyze(jobId));
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Could not analyze this job.");
     } finally {
-      setBusy(false);
+      setAnalyzing(false);
     }
   }
 
@@ -99,32 +131,57 @@ export function JobIntelligence({
         <CardHeader>
           <CardTitle>Requirements</CardTitle>
           <CardDescription>
-            Capture what this job needs so it can be compared with your profile.
+            Extract structured requirements from the job description, review them,
+            then run analysis. Matching stays deterministic and does not run until
+            you ask for it.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
+          <div className="flex flex-wrap items-center gap-3">
+            <Button
+              type="button"
+              onClick={() => void handleExtract()}
+              disabled={locked}
+            >
+              {extracting ? "Extracting requirements…" : "Extract Requirements"}
+            </Button>
+            {extracting ? (
+              <p className="text-sm text-muted-foreground">
+                Reading the job description and structuring requirements.
+              </p>
+            ) : null}
+          </div>
+          {extractNote ? (
+            <p className="text-sm text-muted-foreground">{extractNote}</p>
+          ) : null}
           {requirements.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              No requirements yet. Add the skills and experience the role asks for.
+              No requirements yet. Extract them from the description or add them
+              by hand.
             </p>
           ) : (
             <ul className="grid gap-2">
               {requirements.map((item) => (
                 <li
                   key={item.id}
-                  className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border px-3 py-2"
+                  className="flex flex-wrap items-start justify-between gap-2 rounded-lg border border-border px-3 py-2"
                 >
-                  <div>
+                  <div className="grid min-w-0 flex-1 gap-1">
                     <p className="text-sm font-medium">{item.name}</p>
                     <p className="text-xs text-muted-foreground">
                       {item.category} · {item.importance}
                     </p>
+                    {item.evidence_text ? (
+                      <p className="text-xs leading-5 text-muted-foreground">
+                        Evidence from job description: “{item.evidence_text}”
+                      </p>
+                    ) : null}
                   </div>
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    disabled={busy}
+                    disabled={locked}
                     onClick={() => void handleDelete(item.id)}
                   >
                     Remove
@@ -182,7 +239,7 @@ export function JobIntelligence({
                 />
               </div>
             </div>
-            <Button type="submit" disabled={busy} className="w-fit">
+            <Button type="submit" disabled={locked} className="w-fit">
               Add requirement
             </Button>
           </form>
@@ -193,18 +250,19 @@ export function JobIntelligence({
         <CardHeader>
           <CardTitle>Job analysis</CardTitle>
           <CardDescription>
-            Compare these requirements with your candidate profile. No score yet —
-            just the evidence, transfers, and gaps.
+            After you have reviewed the extracted requirements, compare them with
+            your candidate profile. This does not call the AI matcher — only the
+            deterministic engine.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
           <Button
             type="button"
             onClick={() => void handleAnalyze()}
-            disabled={busy}
+            disabled={locked}
             className="w-fit"
           >
-            {busy ? "Analyzing…" : "Analyze Job"}
+            {analyzing ? "Analyzing…" : "Analyze Job"}
           </Button>
           {error ? (
             <p className="text-sm text-destructive" role="alert">
@@ -222,7 +280,7 @@ function AnalysisResults({ analysis }: { analysis: JobAnalysis }) {
   if (analysis.requirements.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
-        Add at least one requirement before this job can be analyzed.
+        Add or extract at least one requirement before this job can be analyzed.
       </p>
     );
   }
